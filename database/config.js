@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 
-// DB User
-// nodeexpress
-// 6WuFlkg3yCcJqKWM
-
 const dbConnection = async () => {
     try {
         await mongoose.connect(process.env.DB_CNN);
