@@ -30,13 +30,37 @@ const getUser = (req, res) => {
 
 const getUsers = async (req, res) => {
 
+    const page = Number(req.query.page) || 0;
+    const per_page = Number(req.query.per_page) || 5;
+    const desde = ( page - 1 ) * per_page;
+    
     // const usuarios = await UserModel.find();
-    const usuarios = await UserModel.find({}, 'name email role google');
+    // const usuarios = await UserModel.find({}, 'name email role google');
+    // const usuarios = await UserModel.find({}, 'name email role google')
+    //                                 .skip( desde )
+    //                                 .limit( per_page );
+    // const total = await UserModel.count();
+    
+    const [usuarios, total ] = await Promise.all([
+        UserModel.find({}, 'name email role google img')
+        .skip( desde )
+        .limit( per_page ),
+        UserModel.countDocuments()
+    ]);
+    // UserModel.count()
+    
+    const total_pages = Math.ceil(total / per_page);
 
     res.json({
         status: 'success',
         data: {
-            users: usuarios
+            users: usuarios,
+            paginate: {
+                total,
+                per_page,
+                current_page: page,
+                total_pages
+            }
         }
     });
 };
