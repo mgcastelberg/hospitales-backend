@@ -22,17 +22,16 @@ router.post( '/',[
     validarCampos
 ], createHospital );
  
- router.put( '/:id',[ 
+ router.put( '/:id',[
      validarJWT,
-//      check('name', 'El nombre es obligatorio').not().isEmpty(),
-//      check('email', 'El email debe ser valido').isEmail(),
-//      check('role', 'El rol es obligatorio').not().isEmpty(),
-//      validarCampos
+     check('name', 'El nombre es obligatorio').not().isEmpty(),
+     validarCampos
  ], updateHospital );
  
  router.delete( '/:id',[ 
      validarJWT,
-    //  validarCampos
+    // check('hospital', 'El id del hospital debe ser valido').isMongoId(),
+    // validarCampos
  ], deleteHospital );
 
  

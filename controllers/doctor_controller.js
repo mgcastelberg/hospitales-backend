@@ -4,6 +4,7 @@ const { response } = require('express');
 const bcryptjs  = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt');
 // const { validationResult } = require('express-validator');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const DoctorModel = require('../models/doctor');
 
@@ -71,97 +72,102 @@ const createDoctor = async (req, res = response) => {
 
 
 const updateDoctor = async (req, res = response) => {
-
-    res.json({
-        status: 'success',
-        data: "updateDoctor"
-    });
-
     // TODO: Validar token y comprobar su es el usuario correcto
-    // const uid = req.params.id;
+    const id = req.params.id;
+    const uid = req.uid;
 
-    // try {
+    try {
 
-    //     // console.log(uid);
-    //     // const usuarioDB = await UserModel.findById( uid );
-    //     const usuarioDB = await UserModel.findOne({ uid });
+        if(!isValidObjectId(id)){
+            return res.status(404).json({
+                status:'error',
+                message: 'El id del medico debe ser valido'
+            });
+        }
 
-    //     if(!usuarioDB){
-    //         return res.status(404).json({
-    //             status:'error',
-    //             message: 'No existe un usuario por ese id'
-    //         });
-    //     }
+        const doctorDB = await DoctorModel.findById( id );
 
-    //     // // Actualizacion
-    //     // const campos = req.body;
-    //     const {password, google, email, ...campos} = req.body;
-    //     // console.log(campos.email);
-    //     if (usuarioDB.email !== email) {
-    //         const existeEmail = await UserModel.findOne({ email });
-    //         if( existeEmail ){
-    //             return res.status(400).json({
-    //                 status: 'error',
-    //                 message: 'Ya existe un usuario con ese Email'
-    //             });
-    //         }
-    //     }
+        if(!doctorDB){
+            return res.status(404).json({
+                status:'error',
+                message: 'Medico no encontrado por id'
+            });
+        }
 
-    //     // // lo quitamos con la desestructuracion
-    //     // delete campos.password;
-    //     // delete campos.google;
+        const cambiosDoctor = {
+            ...req.body,
+            usuario: uid
+        }
 
-    //     campos.email = email;
-    //     const usuarioActualizado = await UserModel.findByIdAndUpdate( uid, campos, { new: true });
+        const doctorActualizado = await DoctorModel.findByIdAndUpdate( id, cambiosDoctor, { new: true });
 
-    //     res.json({
-    //         status: "success",
-    //         usuario: usuarioActualizado
-    //     });
+        res.json({
+            status: "success",
+            data: doctorActualizado
+        });
 
-    // } catch (error) {
-    //     console.log(error);
-    //     response.status(500).json({
-    //         status: 'error',
-    //         message: 'Error inesperado...'
-    //     });
-    // }
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({
+            status: 'error',
+            message: 'Error inesperado...'
+        });
+    }
 }
 
 const deleteDoctor = async (req, res = response) => {
 
-    res.json({
-        status: 'success',
-        data: "eliminarDoctor"
-    });
+    // res.json({
+    //     status: 'success',
+    //     data: "eliminarDoctor"
+    // });
 
-    // const uid = req.params.id;
+    // TODO: Validar token y comprobar su es el usuario correcto
+    const id = req.params.id;
 
-    // try {
-    //     // uid
-    //     const usuarioDB = await UserModel.findById( uid );
-    //     if(!usuarioDB){
-    //         return res.status(404).json({
-    //             status:'error',
-    //             message: 'No existe un usuario por ese id'
-    //         });
-    //     }
+    try {
 
-    //     await UserModel.findByIdAndDelete( uid );
+        if(!isValidObjectId(id)){
+            return res.status(404).json({
+                status:'error',
+                message: 'El id del medico debe ser valido'
+            });
+        }
 
-    //     res.json({
-    //         status: "success",
-    //         data: "Usuario eliminado"
-            
-    //     });
+        const doctorDB = await DoctorModel.findById( id );
+
+        if (!doctorDB) {
+            return res.status(404).json({
+                status:'error',
+                message: 'Hospital no escontrado por id'
+            });
+        }
+
+        await DoctorModel.findByIdAndDelete( id );
+
+        res.json({
+            status: 'success',
+            data: "Doctor eliminado"
+        });
     
-    // } catch (error) {
-    //     response.status(500).json({
-    //         status: 'error',
-    //         message: 'Error inesperado...'
-    //     });
-    // }
+    } catch (error) {
+        response.status(500).json({
+            status: 'error',
+            message: 'Error inesperado...'
+        });
+    }
     
+}
+
+// Validator function
+function isValidObjectId(id) {
+     
+    if(ObjectId.isValid(id)){
+        if((String)(new ObjectId(id)) === id)
+            return true;       
+        return false;
+    }
+    return false;
 }
 
 module.exports = {
