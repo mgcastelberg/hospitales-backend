@@ -49,17 +49,17 @@ const createHospital = async (req, res = response) => {
 
     // const hospital = new HospitalModel( req.body );
     const uid = req.uid;
-    const hospital = new HospitalModel({ user:uid, ...req.body });
+    const hospitalModel = new HospitalModel({ user:uid, ...req.body });
     console.log(uid);
     
     try {            
         // Guardar hospital
-        const hospitalDB = await hospital.save();
+        const hospital = await hospitalModel.save();
 
         res.json({
             status: 'success',
             data: {
-                hospitalDB
+                hospital
             }
         });
         

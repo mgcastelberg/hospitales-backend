@@ -127,8 +127,7 @@ const updateUser = async (req, res = response) => {
     try {
 
         // console.log(uid);
-        // const usuarioDB = await UserModel.findById( uid );
-        const usuarioDB = await UserModel.findOne({ uid });
+        const usuarioDB = await UserModel.findById( uid );
 
         if(!usuarioDB){
             return res.status(404).json({
@@ -154,8 +153,14 @@ const updateUser = async (req, res = response) => {
         // // lo quitamos con la desestructuracion
         // delete campos.password;
         // delete campos.google;
-
-        campos.email = email;
+        if (!usuarioDB.google) {
+            campos.email = email;
+        } else if (usuarioDB.email != email) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Usuario de google no pueden cambiar su correo'
+            });
+        }
         const usuarioActualizado = await UserModel.findByIdAndUpdate( uid, campos, { new: true });
 
         res.json({

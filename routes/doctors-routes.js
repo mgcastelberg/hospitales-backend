@@ -3,16 +3,16 @@
  * ruta: '/api/doctor'
  */
 
- const { Router } = require('express');
- const { check } = require('express-validator');
- 
- const { validarCampos } = require('../middlewares/validar-campo');
- const { getDoctors, createDoctor, updateDoctor, deleteDoctor } = require('../controllers/doctor_controller');
- const { validarJWT } = require('../middlewares/validar-jwt');
- 
- const router = Router();
- 
- router.get( '/', validarJWT, getDoctors );
+const { Router } = require('express');
+const { check } = require('express-validator');
+
+const { validarCampos } = require('../middlewares/validar-campo');
+const { getDoctors, createDoctor, updateDoctor, deleteDoctor, getDoctorById } = require('../controllers/doctor_controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
+
+const router = Router();
+
+router.get( '/', validarJWT, getDoctors );
  
  // middlewares
 router.post( '/',[
@@ -35,6 +35,11 @@ router.post( '/',[
      validarJWT,
     //  validarCampos
  ], deleteDoctor );
+
+ router.get( '/:id',[ 
+     validarJWT,
+    //  validarCampos
+ ], getDoctorById );
 
  
  module.exports = router;

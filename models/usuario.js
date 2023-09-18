@@ -33,7 +33,7 @@ const UserSchema = Schema({
 
 UserSchema.method('toJSON', function() {
     //Extraemos la versión y el ID que viene en la instancia del objeto
-    const { __v, _id, ...object} = this.toObject();
+    const { __v, _id, password, ...object} = this.toObject();
 
     object.uid = _id;
 
