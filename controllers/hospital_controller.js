@@ -50,7 +50,7 @@ const createHospital = async (req, res = response) => {
     // const hospital = new HospitalModel( req.body );
     const uid = req.uid;
     const hospitalModel = new HospitalModel({ user:uid, ...req.body });
-    console.log(uid);
+    // console.log(uid);
     
     try {            
         // Guardar hospital
@@ -64,7 +64,7 @@ const createHospital = async (req, res = response) => {
         });
         
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json({
             status: 'error',
             message: 'Error inesperado...'
@@ -103,7 +103,7 @@ const updateHospital = async (req, res = response) => {
         });
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         response.status(500).json({
             status: 'error',
             message: 'Error inesperado...'
