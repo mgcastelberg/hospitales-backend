@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -40,6 +41,11 @@ app.use('/api/doctors', require('./routes/doctors-routes'));
 app.use('/api/todo', require('./routes/searches-routes'));
 app.use('/api/upload', require('./routes/uploads-routes'));
 
+
+// Lo último
+app.get('*',(req,res) => {
+    res.sendFile(path.resolve( __dirname, 'public/index.html'));
+});
 
 // app.get('/api/users', (req, res) => {
 //     res.json({
